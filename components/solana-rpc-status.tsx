@@ -4,7 +4,15 @@ import { useState, useEffect } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { RefreshCw, Activity, AlertCircle, CheckCircle, Clock } from "lucide-react"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog"
+import { RefreshCw, Activity, AlertCircle, CheckCircle, Clock, Plus, MessageCircle } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 interface RPCProvider {
@@ -81,6 +89,7 @@ export function SolanaRPCStatus() {
   const [rpcStatuses, setRpcStatuses] = useState<RPCStatus[]>([])
   const [isRefreshing, setIsRefreshing] = useState(false)
   const [lastUpdate, setLastUpdate] = useState<Date>(new Date())
+  const [isProviderDialogOpen, setIsProviderDialogOpen] = useState(false)
 
   const checkRPCStatus = async (
     provider: string,
@@ -240,7 +249,7 @@ export function SolanaRPCStatus() {
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-2xl font-semibold text-foreground">Solana RPC Status</h1>
+              <h1 className="text-2xl font-semibold text-foreground">RPCcheck.com</h1>
               <p className="text-sm text-muted-foreground mt-1">
                 Real-time monitoring of Solana RPC endpoints across all networks
               </p>
@@ -359,11 +368,70 @@ export function SolanaRPCStatus() {
                 className="text-primary hover:text-primary/80 transition-colors font-medium"
               >
                 metasal.xyz
+              </a>{" "}
+              •{" "}
+              <a
+                href="https://github.com/metasal1/rpccheck.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-primary hover:text-primary/80 transition-colors font-medium"
+              >
+                GitHub
               </a>
             </p>
+            <p className="text-xs text-muted-foreground mt-1">Request features or report issues on GitHub</p>
           </div>
         </div>
       </footer>
+
+      {/* Floating action button for RPC providers */}
+      <div className="fixed bottom-6 right-6 z-50">
+        <Dialog open={isProviderDialogOpen} onOpenChange={setIsProviderDialogOpen}>
+          <DialogTrigger asChild>
+            <Button
+              size="lg"
+              className="rounded-full shadow-lg hover:shadow-xl transition-all duration-200 bg-primary hover:bg-primary/90"
+            >
+              <Plus className="h-5 w-5 mr-2" />
+              Add Your RPC
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="sm:max-w-md">
+            <DialogHeader>
+              <DialogTitle className="flex items-center gap-2">
+                <MessageCircle className="h-5 w-5 text-primary" />
+                RPC Provider Contact
+              </DialogTitle>
+              <DialogDescription className="text-left space-y-3 pt-2">
+                <p>Are you an RPC provider and want your endpoints monitored on this status page?</p>
+                <p className="font-medium text-foreground">
+                  Contact us to get your RPC endpoints added to our monitoring system.
+                </p>
+                <div className="bg-muted/50 rounded-lg p-4 border">
+                  <p className="text-sm font-medium text-foreground mb-2">Contact Information:</p>
+                  <a
+                    href="https://t.me/metasal"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 text-primary hover:text-primary/80 transition-colors font-medium"
+                  >
+                    <MessageCircle className="h-4 w-4" />
+                    t.me/metasal
+                  </a>
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Please include your provider name, supported networks, and endpoint URLs when contacting us.
+                </p>
+              </DialogDescription>
+            </DialogHeader>
+            <div className="flex justify-end pt-4">
+              <Button onClick={() => setIsProviderDialogOpen(false)} variant="outline">
+                Close
+              </Button>
+            </div>
+          </DialogContent>
+        </Dialog>
+      </div>
     </div>
   )
 }
