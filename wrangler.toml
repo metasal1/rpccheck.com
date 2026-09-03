@@ -1,5 +1,10 @@
 name = "rpccheck"
 compatibility_date = "2024-09-23"
 compatibility_flags = ["nodejs_compat"]
+main = ".open-next/worker.js"
+account_id = "4e8d1e0f981ddd5939a1e74aa536d38b"
+workers_dev = true
 
-pages_build_output_dir = ".vercel/output/static"
+[assets]
+directory = ".open-next/assets"
+binding = "ASSETS"
