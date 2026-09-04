@@ -1,115 +1,93 @@
 import { type NextRequest, NextResponse } from "next/server"
 
+function isSafeRpcUrl(raw: string): boolean {
+  let u: URL
+  try {
+    u = new URL(raw)
+  } catch {
+    return false
+  }
+  if (u.protocol !== "https:" && u.protocol !== "http:") return false
+  const host = u.hostname.toLowerCase()
+  if (host === "localhost" || host.endsWith(".local") || host === "0.0.0.0") return false
+  if (/^(127|10|192\.168|169\.254)\./.test(host)) return false
+  if (/^172\.(1[6-9]|2\d|3[0-1])\./.test(host)) return false
+  if (host.includes(":")) return false
+  return true
+}
+
+async function rpcCall(endpoint: string, method: string, timeoutMs: number) {
+  const controller = new AbortController()
+  const t = setTimeout(() => controller.abort(), timeoutMs)
+  try {
+    const response = await fetch(endpoint, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ jsonrpc: "2.0", id: 1, method, params: [] }),
+      signal: controller.signal,
+    })
+    const data = await response.json()
+    return { ok: response.ok && !data.error, status: response.status, result: data.result, error: data.error }
+  } finally {
+    clearTimeout(t)
+  }
+}
+
 export async function POST(request: NextRequest) {
   try {
     const { endpoint } = await request.json()
-
-    if (!endpoint) {
+    if (!endpoint || typeof endpoint !== "string") {
       return NextResponse.json({ error: "Endpoint is required" }, { status: 400 })
     }
-
-    // Create the RPC request payload
-    const rpcPayload = {
-      jsonrpc: "2.0",
-      id: 1,
-      method: "getSlot",
-      params: [],
+    if (!isSafeRpcUrl(endpoint)) {
+      return NextResponse.json({ error: "Invalid RPC URL" }, { status: 400 })
     }
 
-    // Make the RPC call with timeout
-    const controller = new AbortController()
-    const timeoutId = setTimeout(() => controller.abort(), 8000) // 8 second timeout
+    const start = Date.now()
+    const slotRes = await rpcCall(endpoint, "getSlot", 8000)
+    const latencyMs = Date.now() - start
 
-    try {
-      const response = await fetch(endpoint, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(rpcPayload),
-        signal: controller.signal,
-      })
-
-      clearTimeout(timeoutId)
-
-      if (!response.ok) {
-        return NextResponse.json(
-          {
-            error: "RPC call failed",
-            status: response.status,
-          },
-          { status: 500 },
-        )
-      }
-
-      const data = await response.json()
-
-      if (data.error) {
-        return NextResponse.json(
-          {
-            error: "RPC error",
-            rpcError: data.error,
-          },
-          { status: 500 },
-        )
-      }
-
-      // Get additional info like block height
-      const blockHeightPayload = {
-        jsonrpc: "2.0",
-        id: 2,
-        method: "getBlockHeight",
-        params: [],
-      }
-
-      let blockHeight = null
-      try {
-        const blockResponse = await fetch(endpoint, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(blockHeightPayload),
-          signal: AbortSignal.timeout(3000),
-        })
-
-        if (blockResponse.ok) {
-          const blockData = await blockResponse.json()
-          if (!blockData.error) {
-            blockHeight = blockData.result
-          }
-        }
-      } catch (error) {
-        // Block height is optional, continue without it
-      }
-
-      return NextResponse.json({
-        success: true,
-        slot: data.result,
-        blockHeight,
-      })
-    } catch (error) {
-      clearTimeout(timeoutId)
-
-      if (error instanceof Error && error.name === "AbortError") {
-        return NextResponse.json({ error: "Request timeout" }, { status: 408 })
-      }
-
+    if (!slotRes.ok) {
       return NextResponse.json(
         {
-          error: "Network error",
-          details: error instanceof Error ? error.message : "Unknown error",
+          success: false,
+          error: slotRes.error ? "RPC error" : "RPC call failed",
+          status: slotRes.status,
+          rpcError: slotRes.error,
+          latencyMs,
         },
-        { status: 500 },
+        { status: 200 },
       )
     }
+
+    let blockHeight: number | null = null
+    let health: string | null = null
+    try {
+      const heightRes = await rpcCall(endpoint, "getBlockHeight", 3000)
+      if (heightRes.ok && typeof heightRes.result === "number") blockHeight = heightRes.result
+    } catch {
+      /* optional */
+    }
+    try {
+      const healthRes = await rpcCall(endpoint, "getHealth", 3000)
+      if (healthRes.ok) health = typeof healthRes.result === "string" ? healthRes.result : "ok"
+    } catch {
+      /* optional */
+    }
+
+    return NextResponse.json({
+      success: true,
+      slot: slotRes.result,
+      blockHeight,
+      health,
+      latencyMs,
+    })
   } catch (error) {
+    const message = error instanceof Error ? error.message : "Unknown error"
+    const timeout = error instanceof Error && error.name === "AbortError"
     return NextResponse.json(
-      {
-        error: "Invalid request",
-        details: error instanceof Error ? error.message : "Unknown error",
-      },
-      { status: 400 },
+      { success: false, error: timeout ? "Request timeout" : "Invalid request", details: message },
+      { status: timeout ? 408 : 400 },
     )
   }
 }

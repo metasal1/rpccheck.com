@@ -1,0 +1,14 @@
+/* rpccheck brand tokens */
+:root {
+  --rpc-bg: #0a0a0a;
+  --rpc-fg: #fafafa;
+  --rpc-card: #171717;
+  --rpc-primary: #1447e6;
+  --rpc-muted: #262626;
+  --rpc-muted-fg: #a1a1a1;
+  --rpc-success: #00bc7d;
+  --rpc-warning: #fe9a00;
+  --rpc-error: #e7000b;
+  --rpc-font-sans: "Geist", ui-sans-serif, system-ui, sans-serif;
+  --rpc-font-mono: "Geist Mono", ui-monospace, monospace;
+}
