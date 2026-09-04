@@ -12,6 +12,7 @@ const nextConfig = {
   experimental: {
     cpus: 1,
   },
+  allowedDevOrigins: ["*.metasal.xyz", "rpccheck.metasal.xyz"],
 }
 
 export default nextConfig

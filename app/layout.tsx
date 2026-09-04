@@ -3,28 +3,35 @@ import type { Metadata } from "next"
 import { GeistSans } from "geist/font/sans"
 import { GeistMono } from "geist/font/mono"
 import Script from "next/script"
-import { Suspense } from "react"
 import "./globals.css"
 
+const SITE = "https://rpccheck.com"
+
 export const metadata: Metadata = {
-  title: "RPC Check for Solana",
-  description:
-    "Monitor Solana RPC endpoints across Mainnet, Devnet, and Testnet networks in real-time. Check response times, block heights, and network health for all major providers.",
-  keywords: ["Solana", "RPC", "blockchain", "monitoring", "status", "mainnet", "devnet", "testnet"],
-  authors: [{ name: "metasal.xyz", url: "https://metasal.xyz" }],
-  creator: "metasal.xyz",
+  metadataBase: new URL(SITE),
+  title: "rpccheck",
+  description: "Ping any Solana RPC. Slot, lag, latency.",
+  keywords: ["Solana", "RPC", "latency", "slot", "mainnet"],
+  authors: [{ name: "Milysec", url: "https://milysec.com" }],
+  creator: "Milysec",
   openGraph: {
-    title: "RPC Check for Solana",
-    description: "Monitor Solana RPC endpoints across all networks in real-time",
-    siteName: "RPC Check",
+    title: "rpccheck",
+    description: "Ping any Solana RPC. Slot, lag, latency.",
+    url: SITE,
+    siteName: "rpccheck",
+    images: [{ url: "/og.png", width: 1200, height: 630 }],
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "RPC Check for Solana",
-    description: "Monitor Solana RPC endpoints across all networks in real-time",
+    title: "rpccheck",
+    description: "Ping any Solana RPC. Slot, lag, latency.",
+    images: ["/og.png"],
   },
-  generator: "v0.app",
+  icons: {
+    icon: [{ url: "/favicon.png", type: "image/png" }],
+    apple: [{ url: "/apple-icon.png", type: "image/png" }],
+  },
 }
 
 export default function RootLayout({
@@ -35,8 +42,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`font-sans ${GeistSans.variable} ${GeistMono.variable}`}>
-        <Suspense fallback={null}>{children}</Suspense>
-        {/* Google Analytics */}
+        {children}
         <Script strategy="afterInteractive" src="https://www.googletagmanager.com/gtag/js?id=G-W44S4JB071" />
         <Script id="google-analytics" strategy="afterInteractive">{`
           window.dataLayer = window.dataLayer || [];
