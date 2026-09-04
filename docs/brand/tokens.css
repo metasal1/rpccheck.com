@@ -1,0 +1,15 @@
+:root {
+  --rpc-ground: #0A0A0A;
+  --rpc-ink: #FAFAFA;
+  --rpc-card: #171717;
+  --rpc-border: #262626;
+  --rpc-muted: #A1A1A1;
+  --rpc-paper: #F7F8F7;
+  --rpc-primary: #1447E6;
+  --rpc-success: #00BC7D;
+  --rpc-warning: #FE9A00;
+  --rpc-error: #E7000B;
+  --rpc-font-sans: "Geist", ui-sans-serif, system-ui, sans-serif;
+  --rpc-font-mono: "Geist Mono", ui-monospace, monospace;
+  --rpc-tracking-wordmark: -0.04em;
+}
