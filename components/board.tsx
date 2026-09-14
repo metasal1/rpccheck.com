@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react"
 import { Activity, AlertCircle, CheckCircle, Clock, RefreshCw } from "lucide-react"
 import { cn } from "@/lib/utils"
+import { FluxCta } from "@/components/flux-cta"
 
 type Network = "mainnet" | "devnet" | "testnet"
 type Status = "online" | "slow" | "offline" | "checking"
@@ -248,6 +249,8 @@ export function Board() {
             </div>
           ) : null}
         </form>
+
+        <FluxCta />
 
         <div className="mb-8 grid grid-cols-1 gap-4 md:grid-cols-3">
           {(["mainnet", "devnet", "testnet"] as const).map((network) => {

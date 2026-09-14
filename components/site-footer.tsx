@@ -1,3 +1,5 @@
+import { FLUX_SIGNUP } from "@/lib/fluxrpc"
+
 export function SiteFooter() {
   return (
     <footer className="border-t border-border bg-background">
@@ -30,14 +32,24 @@ export function SiteFooter() {
             />
           </a>
         </div>
-        <a
-          href="https://github.com/metasal1/rpccheck.com"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-sm text-muted-foreground hover:text-foreground"
-        >
-          GitHub
-        </a>
+        <div className="flex items-center gap-4 text-sm">
+          <a
+            href={FLUX_SIGNUP}
+            target="_blank"
+            rel="noopener noreferrer sponsored"
+            className="text-muted-foreground hover:text-foreground"
+          >
+            FluxRPC NEWUSER
+          </a>
+          <a
+            href="https://github.com/metasal1/rpccheck.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-muted-foreground hover:text-foreground"
+          >
+            GitHub
+          </a>
+        </div>
       </div>
     </footer>
   )
