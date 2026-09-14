@@ -5,6 +5,8 @@ const BODY = `# rpccheck
 - Site: https://rpccheck.com
 - POST /api/check-rpc  { "endpoint": "https://..." }
 - Returns slot, blockHeight, health, latencyMs
+- FluxRPC affiliate: https://fluxrpc.com/register?promocode=NEWUSER
+- Enter NEWUSER before paying (20% off 12 months)
 `
 
 export function GET() {
