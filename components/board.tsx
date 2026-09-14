@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import { Activity, AlertCircle, CheckCircle, Clock, RefreshCw } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { FluxCta } from "@/components/flux-cta"
+import { NamedProvider, ProviderDirectory } from "@/components/provider-links"
 import { PUBLIC_ENDPOINTS, type Network, type PublicEndpoint } from "@/lib/public-endpoints"
 
 type Status = "online" | "slow" | "offline" | "checking"
@@ -274,7 +275,9 @@ export function Board() {
               <tbody className="divide-y divide-border">
                 {rows.map((row) => (
                   <tr key={`${row.name}-${row.network}`}>
-                    <td className="px-6 py-4 text-sm">{row.name}</td>
+                    <td className="px-6 py-4 text-sm">
+                      <NamedProvider name={row.name} />
+                    </td>
                     <td className="px-6 py-4 text-sm capitalize text-muted-foreground">{row.network}</td>
                     <td className="px-6 py-4">
                       <span className="inline-flex items-center gap-2 text-sm">
@@ -305,7 +308,9 @@ export function Board() {
             {rows.map((row) => (
               <div key={`${row.name}-${row.network}-m`} className="px-4 py-4">
                 <div className="flex items-center justify-between gap-3">
-                  <p className="text-sm font-medium">{row.name}</p>
+                  <p className="text-sm font-medium">
+                    <NamedProvider name={row.name} />
+                  </p>
                   <span className="inline-flex items-center gap-2 text-sm">
                     <Led status={row.status} />
                     {row.status}
@@ -320,6 +325,8 @@ export function Board() {
             ))}
           </div>
         </div>
+
+        <ProviderDirectory />
       </div>
     </div>
   )

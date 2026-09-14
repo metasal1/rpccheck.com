@@ -7,6 +7,7 @@ const BODY = `# rpccheck
 - POST /api/check-rpc  { "endpoint": "https://..." }
 - Returns slot, blockHeight, health, latencyMs
 - Public board: Solana Labs, PublicNode, Tatum, aex402
+- Also linked: FluxRPC, Helius, Ankr, Triton, Alchemy, QuickNode, Chainstack, dRPC
 - FluxRPC affiliate: https://fluxrpc.com/register?promocode=NEWUSER
 - Enter NEWUSER before paying (20% off 12 months)
 
