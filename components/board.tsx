@@ -4,15 +4,9 @@ import { useEffect, useState } from "react"
 import { Activity, AlertCircle, CheckCircle, Clock, RefreshCw } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { FluxCta } from "@/components/flux-cta"
+import { PUBLIC_ENDPOINTS, type Network, type PublicEndpoint } from "@/lib/public-endpoints"
 
-type Network = "mainnet" | "devnet" | "testnet"
 type Status = "online" | "slow" | "offline" | "checking"
-
-interface Endpoint {
-  name: string
-  network: Network
-  endpoint: string
-}
 
 interface Row {
   name: string
@@ -25,14 +19,6 @@ interface Row {
   health?: string | null
   lastChecked: Date
 }
-
-const PUBLIC: Endpoint[] = [
-  { name: "Solana Labs", network: "mainnet", endpoint: "https://api.mainnet-beta.solana.com" },
-  { name: "Solana Labs", network: "devnet", endpoint: "https://api.devnet.solana.com" },
-  { name: "Solana Labs", network: "testnet", endpoint: "https://api.testnet.solana.com" },
-  { name: "PublicNode", network: "mainnet", endpoint: "https://solana.publicnode.com" },
-  { name: "Ankr", network: "mainnet", endpoint: "https://rpc.ankr.com/solana" },
-]
 
 function Led({ status }: { status: Status }) {
   const color = {
@@ -57,7 +43,7 @@ async function ping(endpoint: string) {
   return { data, latencyMs }
 }
 
-function toRow(ep: Endpoint, data: Record<string, unknown>, latencyMs: number): Row {
+function toRow(ep: PublicEndpoint, data: Record<string, unknown>, latencyMs: number): Row {
   const ok = Boolean(data.success)
   const status: Status = !ok ? "offline" : latencyMs > 2000 ? "slow" : "online"
   return {
@@ -85,7 +71,7 @@ export function Board() {
   const scan = async () => {
     setRefreshing(true)
     setRows(
-      PUBLIC.map((ep) => ({
+      PUBLIC_ENDPOINTS.map((ep) => ({
         name: ep.name,
         network: ep.network,
         endpoint: ep.endpoint,
@@ -94,7 +80,7 @@ export function Board() {
       })),
     )
     const results = await Promise.all(
-      PUBLIC.map(async (ep) => {
+      PUBLIC_ENDPOINTS.map(async (ep) => {
         try {
           const { data, latencyMs } = await ping(ep.endpoint)
           return toRow(ep, data, latencyMs)

@@ -9,14 +9,26 @@ const SITE = "https://rpccheck.com"
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE),
-  title: "rpccheck",
-  description: "Ping any Solana RPC. Slot, lag, latency.",
-  keywords: ["Solana", "RPC", "latency", "slot", "mainnet"],
+  title: {
+    default: "rpccheck: ping any Solana RPC",
+    template: "%s | rpccheck",
+  },
+  description:
+    "What is an RPC? Ping any Solana RPC endpoint. Slot, lag, latency. Compare public nodes before you ship.",
+  keywords: [
+    "what is an RPC",
+    "Solana RPC",
+    "RPC endpoint",
+    "JSON-RPC",
+    "slot",
+    "latency",
+    "mainnet",
+  ],
   authors: [{ name: "Milysec", url: "https://milysec.com" }],
   creator: "Milysec",
   openGraph: {
-    title: "rpccheck",
-    description: "Ping any Solana RPC. Slot, lag, latency.",
+    title: "rpccheck: ping any Solana RPC",
+    description: "What is an RPC? Ping any Solana RPC. Slot, lag, latency.",
     url: SITE,
     siteName: "rpccheck",
     images: [{ url: "/og.png", width: 1200, height: 630 }],
@@ -24,8 +36,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "rpccheck",
-    description: "Ping any Solana RPC. Slot, lag, latency.",
+    title: "rpccheck: ping any Solana RPC",
+    description: "What is an RPC? Ping any Solana RPC. Slot, lag, latency.",
     images: ["/og.png"],
   },
   icons: {
